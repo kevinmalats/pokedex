@@ -27,9 +27,9 @@ export default function PokemonList(props:Iprops){
 return(
    <>
     {pokemons.length > 0 ?  <ul className="grid grid-cols-3  gap-3 w-full ">
-        {pokemons.map((pokemon)=>(
+        {pokemons.map((pokemon, index)=>(
             
-            <li>
+            <li key={index}>
                <a href="">
                     <div className="flex ">
                         <div className="grid grid-rows-3 gap-20 w-55 max-w-8 h-60 shadow-md  pl-2 ">
