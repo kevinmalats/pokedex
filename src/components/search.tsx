@@ -1,10 +1,10 @@
 
 import React, {useEffect, useState} from "react";
-import { PokemonDTO } from "~/types/IPokemon";
+
 type Iprops = {
     searching:string;
-    handleOnChange: (event) => void;
-    handleKeyPress: (event) => void;
+    handleOnChange: (event:React.ChangeEvent<HTMLInputElement>) => void;
+    handleKeyPress:(event:React.KeyboardEvent<HTMLInputElement>) => void;
 
 }
 

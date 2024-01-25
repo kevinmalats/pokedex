@@ -4,7 +4,7 @@ import { PokemonDTO } from "~/types/IPokemon";
 import Search from "~/components/search";
 import { getPokemons } from "~/HttpClient/fetchWrapper";
 import InfiniteScroll from "react-infinite-scroll-component";
-
+import Switch from '@mui/material/Switch';
 
 
 const endpoint:string = "pokemons" ;
@@ -12,7 +12,7 @@ export default function Home(){
     const [pokemons, setPokemons] = useState<PokemonDTO[]>([]);
     const [ searching, setSearching] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(true);
-    const [accumOffset, setAccumOffset] = useState<number>(0);
+    const [checked, setChecked] = useState<boolean>(false);
     const offset= useRef<number>(0);
     const load= useRef<boolean>(false);
 
@@ -25,7 +25,6 @@ export default function Home(){
         .then((response)=> {
             offset.current = offset.current + 10
             setPokemons((prevList) => prevList.concat(response))
-            setAccumOffset(offset.current)
             
         }).catch((err)=> {
             console.log(err)
@@ -35,15 +34,19 @@ export default function Home(){
     }
 
     /* HANDLES  */
-    const handleOnChange = (event) => {
+    const handleOnChange = (event:React.ChangeEvent<HTMLInputElement>) => {
         console.log(event.target.value)
         setSearching(event.target.value)
     }
-    const handleKeyPress =  (event) => {
+    const handleKeyPress =  (event:React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
             getPokemons(endpoint + "/" + searching).then((response)=> setPokemons(response))
         }
       }; 
+
+      const handleChange = (event: React.ChangeEvent<HTMLInputElement>) =>{
+        setChecked(!checked)
+      }
 
     useEffect((()=>{
       fetchPokemon()
@@ -63,6 +66,14 @@ export default function Home(){
                
             </section>
             <section className="my-20 mx-auto  w-4/5">
+           <div className="mb-10">
+           <Switch
+            checked={checked}
+            onChange={handleChange}
+            inputProps={{ 'aria-label': 'controlled' }}
+            />
+            <label>Choose six Pokemons</label>
+           </div>
                 <InfiniteScroll 
                 dataLength={pokemons.length} 
                 next={fetchPokemon} 

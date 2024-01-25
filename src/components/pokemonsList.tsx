@@ -21,7 +21,7 @@ const color: {
   };
 export default function PokemonList(props:Iprops){
     const {pokemons} = props;
-   /// console.log(pokemons[0]?.types[0]?.type.name)
+ //  console.log(pokemons[0]?.types[0]?.type.name)
  
 
 return(
