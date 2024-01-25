@@ -72,7 +72,7 @@ export default function Home(){
             onChange={handleChange}
             inputProps={{ 'aria-label': 'controlled' }}
             />
-            <label>Choose six Pokemons</label>
+            <label className="text-sm font-mono">Choose six Pokemons</label>
            </div>
                 <InfiniteScroll 
                 dataLength={pokemons.length} 
