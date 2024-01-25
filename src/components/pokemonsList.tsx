@@ -1,27 +1,16 @@
 
 import React from "react";
-import { PokemonDTO } from "~/types/IPokemon";
+import { IPokemSave, PokemonDTO } from "~/types/IPokemon";
+import {color} from "~/constans/color"
 
 type Iprops = {
     pokemons:PokemonDTO[]
+    handleEventClick:(pokemonSave: IPokemSave) => void;
 }
-const color: {
-    grass: string;
-    water: string;
-    fire: string;
-    bug: string;
-    electric: string;
-    [key: string]: string ;
-  } = {
-    grass: "bg-green-500",
-    water: "bg-blue-500",
-    fire: "bg-red-500",
-    bug: "bg-orange-900",
-    electric: "bg-yellow-500",
-  };
+
 export default function PokemonList(props:Iprops){
-    const {pokemons} = props;
- //  console.log(pokemons[0]?.types[0]?.type.name)
+    const {pokemons, handleEventClick} = props;
+    console.log(pokemons[10]?.types[0]?.type.name)
  
 
 return(
@@ -30,14 +19,14 @@ return(
         {pokemons.map((pokemon, index)=>(
             
             <li key={index}>
-               <a href="">
+               <a onClick={()=> handleEventClick({name:pokemon.name, img:pokemon.sprites.front_default, type:pokemon?.types[0]?.type.name || ""})} className="cursor-pointer">
                     <div className="flex ">
                         <div className="grid grid-rows-3 gap-20 w-55 max-w-8 h-60 shadow-md  pl-2 ">
                             {/* Name */}
                             <div className=" mt-5">
                                 <h4 className="text-3xl font-black">{pokemon.name}</h4>
                             </div>
-                            {/* Attack Deffense */}
+                            {/* Attack Defense */}
                             <div className="w-full my-2  flex">
                               <div className="mx-2">
                                 <div className="rounded-full  h-10 w-10 text-center border-2 border-black flex items-center ">
@@ -49,7 +38,7 @@ return(
                                 <div className="rounded-full  h-10 w-10 text-center border-2 border-black flex items-center ">
                                         <span className="m-auto font-black">{pokemon.defense}</span>                                     
                                 </div>
-                               <div className=" opacity-70"><label>Deffense</label></div> 
+                               <div className=" opacity-70"><label>Defense</label></div> 
                               </div>
                             </div>
                               {/* Power */}

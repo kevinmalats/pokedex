@@ -189,3 +189,13 @@ export type PokemonDTO = {
   defense: number;
   types: Type[];
 };
+export type IPokemSave = {
+  name: string;
+  img: string;
+  type: string;
+};
+
+export type RequestPostSave = {
+  name: string;
+  pokemons: IPokemSave[];
+};
