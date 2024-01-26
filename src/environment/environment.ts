@@ -3,5 +3,5 @@ type IEnvironment = {
 };
 
 export const environtment: IEnvironment = {
-  url: "https://backend-deploy-vercel-47bg-8wvm5s7wv-kevinmalats.vercel.app",
+  url: "https://back-test-b8uxb0448-kevinmalats.vercel.app/",
 };
