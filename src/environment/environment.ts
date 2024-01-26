@@ -3,5 +3,5 @@ type IEnvironment = {
 };
 
 export const environtment: IEnvironment = {
-  url: "http://localhost:8080",
+  url: "https://back-pokedex-ksdackvmo-kevinmalats.vercel.app",
 };

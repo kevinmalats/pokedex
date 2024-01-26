@@ -1,47 +1,156 @@
-import Head from "next/head";
-import Link from "next/link";
-import { useEffect, useState } from "react";
+import React, {useState, useEffect, useRef} from "react";
+import PokemonList from "~/components/pokemonsList";
+import { IPokemSave, PokemonDTO, RequestPostSave } from "~/types/IPokemon";
+import Search from "~/components/search";
+import { getPokemons, saveTeam } from "~/HttpClient/fetchWrapper";
+import InfiniteScroll from "react-infinite-scroll-component";
+import Switch from '@mui/material/Switch';
+import PokemonsSelectd from "~/components/pokemonsSelected";
+import CustomModal from "~/components/modal";
+import CircularProgress from '@mui/material/CircularProgress';
 
-export default function Home() {
-  const [text, setText] = useState("");
+const endpoint:string = "pokemons" ;
+export default function Home(){
+    const [pokemons, setPokemons] = useState<PokemonDTO[]>([]);
+    const [pokemonsSelected, setPokemonsSelectd] = useState<IPokemSave[]>([]);
+    const [ searching, setSearching] = useState<string>("");
+    const [loading, setLoading] = useState<boolean>(true);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [checked, setChecked] = useState<boolean>(false);
+    const [isModalOpen, setModalOpen] = useState(false);
+    const [isSaved, setIsSaved] = useState(false);
+    const offset= useRef<number>(0);
+    const load= useRef<boolean>(false);
 
-  useEffect(() => {
-    const request = async () => {
-      const result = await fetch("/api/pokemon");
-      // This is just an example to obtain data from the endpoint. Hint :) avoid no typesafety we hate that
-      const resultJson = await result.json();
-      console.log({ resultJson });
-      setText(resultJson.message);
-    };
-    void request();
-  }, []);
+    const validatePokemsSelected = (newPokem: IPokemSave) =>{
+        return pokemonsSelected.length < 6 &&
+         validateIsExistPokemon(newPokem.name) && 
+         validateTypePokemon(newPokem.type)  ;
+    }
+    const validateIsExistPokemon = (name:string) => {
+        return  pokemonsSelected.map(pok => pok.name).indexOf(name) === -1
+    }
+    const validateTypePokemon = (type:string) => {
+        return  pokemonsSelected.map(pok => pok.type).indexOf(type) === -1
+    }
 
-  return (
-    <>
-      <Head>
-        <title>Condorsoft</title>
-        <meta name="description" content="Condorsoft technical test" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#04040c] to-[#15162c]">
-        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
-          <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
-            Condorsoft Technical Test <p>{text}</p>
-          </h1>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
-            <Link
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
-              href="https://condorsoft.dev/"
-              target="_blank"
-            >
-              <h3 className="text-2xl font-bold">About our family →</h3>
-              <div className="text-lg">
-                We create the best products and look for the best.
-              </div>
-            </Link>
-          </div>
+    const saveTeamPokemon = (name:string) =>{
+        const dataSave:RequestPostSave = {name,pokemons: pokemonsSelected}
+        saveTeam(endpoint,dataSave).then((response)=> {
+          setIsSaved(true)
+          setIsLoading(false)
+        });
+    }
+
+    const searchPokemon = () =>{
+        if(searching === ""){
+           setLoading(true)
+            offset.current = 0;
+            fetchPokemon();
+            return;
+        }
+        getPokemons(endpoint + "/" + searching).then((response)=> setPokemons(response));
+        setLoading(false)
+    }
+    const fetchPokemon =  async () => {
+        if(!load.current){
+            load.current = true;
+            return
+        }
+        getPokemons(endpoint, `?limit=9&offset=${offset.current}`)
+        .then((response)=> {
+            offset.current = offset.current + 10
+            setPokemons((prevList) => prevList.concat(response))
+            
+        }).catch((err)=> {
+            console.log(err)
+        }).finally(() => {
+            console.log("finally")
+           })
+    }
+
+
+    /* HANDLES  */
+    const handleOnChange = (event:React.ChangeEvent<HTMLInputElement>) => {
+        console.log(event.target.value)
+        setSearching(event.target.value)
+    }
+    const handleKeyPress =  (event:React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') {
+          searchPokemon()
+        }
+      }; 
+
+      const handleChange = (event: React.ChangeEvent<HTMLInputElement>) =>{
+        setChecked(!checked)
+      }
+      const handleClickEvent = (pokem:IPokemSave) =>{
+        if(!checked){
+            return
+        }
+        if(validatePokemsSelected(pokem))
+        setPokemonsSelectd((preventList) => preventList.concat(pokem));
+        console.log(pokemonsSelected)
+      }
+      const handleRemove = (name:string) => {
+        const pokemonFilter: IPokemSave[] = pokemonsSelected.filter(pok => pok.name !== name)
+        setPokemonsSelectd(pokemonFilter)
+      }
+      const handleClickSearch = () => {
+        searchPokemon()
+      }
+      const handleSave = (name: string) => {
+        setIsLoading(true)
+        localStorage.setItem("nameUser",name)
+        saveTeamPokemon(name)
+      
+      };
+
+    useEffect((()=>{
+      fetchPokemon()
+    }),[])
+
+
+    
+
+    return(
+        <>
+        <div className="absolute top-40  w-full ">
+           <section className="mb-20">
+            <h5 className="text-3xl text-center"> 800 <strong>Pokemons </strong>for you to choose your favorite</h5>
+           </section>
+            <section className="w-4/5 mx-auto">
+             <Search handleClick={handleClickSearch} handleKeyPress={handleKeyPress} handleOnChange={handleOnChange} searching={searching}/>
+               
+            </section>
+            <section className="my-20 mx-auto  w-4/5">
+           <div className="mb-10">
+            <div className="mb-5">
+            {pokemonsSelected.length > 0 && <PokemonsSelectd handleRemove={handleRemove} pokemonsSelected={pokemonsSelected}/> }
+            {pokemonsSelected.length === 6 && <button className="mt-5 w-60 h-10 bg-green-500 rounded px-py text-zinc-100" onClick={()=>setModalOpen(true)}> Save Your Team </button> }
+            </div>
+            <CustomModal loading={isLoading} isSaved={isSaved} isOpen={isModalOpen} onRequestClose={() => setModalOpen(false)} onSave={handleSave} />
+           <Switch
+            checked={checked}
+            onChange={handleChange}
+            inputProps={{ 'aria-label': 'controlled' }}
+            />
+            <label className="text-sm font-mono">Choose your six Pokemons</label>
+           </div>
+                <InfiniteScroll 
+                dataLength={pokemons.length} 
+                next={fetchPokemon} 
+                loader={ <p className="text-3xl text-center mt-5">  <CircularProgress /></p>}
+                hasMore={loading}
+                >
+                  <PokemonList pokemons={pokemons} handleEventClick={handleClickEvent}/>
+                
+                </InfiniteScroll>
+              
+                
+            </section>
         </div>
-      </main>
-    </>
-  );
+      
+         </>
+    )
 }

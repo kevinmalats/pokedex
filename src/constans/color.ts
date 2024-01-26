@@ -4,11 +4,13 @@ export const color: {
   fire: string;
   bug: string;
   electric: string;
+  normal: string;
   [key: string]: string;
 } = {
   grass: "bg-green-500",
-  water: "bg-blue-500",
+  water: "bg-blue-400",
   fire: "bg-red-500",
-  bug: "bg-orange-900",
-  electric: "bg-yellow-400",
+  bug: "bug",
+  electric: "electric",
+  normal: "normal",
 };

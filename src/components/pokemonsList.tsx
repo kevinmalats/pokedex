@@ -10,8 +10,7 @@ type Iprops = {
 
 export default function PokemonList(props:Iprops){
     const {pokemons, handleEventClick} = props;
-    console.log(pokemons[10]?.types[0]?.type.name)
- 
+  
 
 return(
    <>

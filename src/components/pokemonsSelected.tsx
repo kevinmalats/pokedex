@@ -8,7 +8,6 @@ type IProps ={
 }
 export default function PokemonsSelectd (props:IProps){
     const { pokemonsSelected, handleRemove } = props;
-    console.log(pokemonsSelected.length)
     return(
         <section className="h-90 shadow-md w-60 border py-4">
             <h4 className="text-center font-mono text-2sm"><strong>Your Pokemons Selected</strong></h4>

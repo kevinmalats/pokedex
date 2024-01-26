@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
 import Modal from '@mui/material/Modal';
-
+import Link from 'next/link';
+import { CircularProgress } from '@mui/material';
+import { green } from '@mui/material/colors';
 
 
 
 interface ModalProps {
   isOpen: boolean;
+  isSaved:boolean;
+  loading:boolean;
   onRequestClose: () => void;
   onSave: (name: string) => void;
 }
 
-const CustomModal: React.FC<ModalProps> = ({ isOpen, onRequestClose, onSave }) => {
+const CustomModal: React.FC<ModalProps> = ({ isOpen, onRequestClose, onSave, isSaved, loading }) => {
   const [name, setName] = useState<string>('');
 
   const handleSave = () => {
@@ -37,18 +41,40 @@ const CustomModal: React.FC<ModalProps> = ({ isOpen, onRequestClose, onSave }) =
                 className='w-60 p-2 mb-4 border-2 border-black rounded shadow-sm'
             />
             <div>
-                <button
+              {!isSaved ? 
+                (
+                  <>
+                    <button
                     onClick={handleSave}
                     className='bg-green-500 text-white px-4 py-2 mr-2 rounded hover:bg-blue-600'
                  >
                     Save
                  </button>
+                 {loading && (
+                    <CircularProgress
+                      size={68}
+                      sx={{
+                        color: green,
+                        position: 'absolute',
+                        top: -6,
+                        left: -6,
+                        zIndex: 1,
+                      }}
+                    />
+        )}
                 <button
                     onClick={onRequestClose}
                     className='bg-red-500 text-white px-4 py-2 rounded hover:bg-gray-600'
                     >
                     Close
                 </button>
+                  </>
+                )
+              :  
+              <Link  className='bg-green-500 text-white px-4 py-2 rounded hover:bg-gray-600' href={"/teams"}>
+              Look your Team
+              </Link>
+              }
             </div>
     </div>
       </Modal>

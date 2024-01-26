@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.normal{
+    background-color: #F89EAE ;
+}
+.electric {
+    background-color: #F2CB07;
+}
+.bug{
+    background-color: blueviolet;
+}
