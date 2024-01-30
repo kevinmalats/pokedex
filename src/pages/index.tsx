@@ -1,3 +1,4 @@
+use "client"
 import React, {useState, useEffect, useRef} from "react";
 import PokemonList from "~/components/pokemonsList";
 import { IPokemSave, PokemonDTO, RequestPostSave } from "~/types/IPokemon";
@@ -143,6 +144,7 @@ export default function Home(){
       };
 
     useEffect((()=>{
+      console.log("useEffect activado")
       fetchPokemon()
     }),[])
 
