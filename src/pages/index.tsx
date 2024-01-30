@@ -72,8 +72,8 @@ export default function Home(){
         setLoading(false)
     }
     const fetchPokemon =  async () => {
-      console.log(load.current)
-        if(!load.current){
+      console.log(process.env.NODE_ENV)
+        if(!load.current && process.env.NODE_ENV !== 'production'){
             load.current = true;
             return
         }
