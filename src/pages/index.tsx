@@ -75,6 +75,7 @@ export default function Home(){
             load.current = true;
             return
         }
+        console.log("getting pokemon")
         getPokemons(endpoint, `?limit=9&offset=${offset.current}`)
         .then((response)=> {
             offset.current = offset.current + 10;

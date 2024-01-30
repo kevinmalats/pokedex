@@ -5,6 +5,7 @@ export const getPokemons = async (
   endPoint: string,
   params: string = "",
 ): Promise<any> => {
+  console.log("wrapper");
   const response = await fetch(`${environtment.url}/${endPoint}/${params}`);
   return response.json();
 };
