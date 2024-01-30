@@ -188,11 +188,13 @@ export type PokemonDTO = {
   attack: number;
   defense: number;
   types: Type[];
+  selected?: boolean;
 };
 export type IPokemSave = {
   name: string;
   img: string;
   type: string;
+  selected?: boolean;
 };
 
 export type RequestPostSave = {

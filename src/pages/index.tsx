@@ -22,6 +22,24 @@ export default function Home(){
     const offset= useRef<number>(0);
     const load= useRef<boolean>(false);
 
+    const changeStateSelected = (name:string):Promise<void> => {
+      return new Promise((resolve,reject) => {
+        const listPokemons : PokemonDTO[] = [...pokemons];
+        const poke:PokemonDTO | undefined =  listPokemons.find((e) => e.name === name);
+        if(poke) {
+          poke.selected = !(poke.selected);
+          if(!poke.selected){
+            removePokemonFromSelected(poke.name)
+            reject()
+          }
+          console.log(poke.selected)
+          setPokemons(listPokemons)
+         resolve() 
+        } 
+      })
+    
+    }
+
     const validatePokemsSelected = (newPokem: IPokemSave) =>{
         return pokemonsSelected.length < 6 &&
          validateIsExistPokemon(newPokem.name) && 
@@ -49,7 +67,7 @@ export default function Home(){
             fetchPokemon();
             return;
         }
-        getPokemons(endpoint + "/" + searching).then((response)=> setPokemons(response));
+        getPokemons(endpoint + "/" + searching).then(response=> setPokemons(response));
         setLoading(false)
     }
     const fetchPokemon =  async () => {
@@ -59,8 +77,15 @@ export default function Home(){
         }
         getPokemons(endpoint, `?limit=9&offset=${offset.current}`)
         .then((response)=> {
-            offset.current = offset.current + 10
-            setPokemons((prevList) => prevList.concat(response))
+            offset.current = offset.current + 10;
+            const responseMapped: PokemonDTO[] = response.map((r:PokemonDTO)=>{
+              return{
+                selected:false,
+                ...r
+              }
+            })
+            console.log(responseMapped)
+            setPokemons((prevList) => prevList.concat(responseMapped))
             
         }).catch((err)=> {
             console.log(err)
@@ -70,9 +95,14 @@ export default function Home(){
     }
 
 
+    const removePokemonFromSelected = (name:string) => {
+      const pokemonFilter: IPokemSave[] = pokemonsSelected.filter(pok => pok.name !== name)
+      setPokemonsSelectd(pokemonFilter)
+    }
+
     /* HANDLES  */
     const handleOnChange = (event:React.ChangeEvent<HTMLInputElement>) => {
-        console.log(event.target.value)
+
         setSearching(event.target.value)
     }
     const handleKeyPress =  (event:React.KeyboardEvent<HTMLInputElement>) => {
@@ -84,21 +114,27 @@ export default function Home(){
       const handleChange = (event: React.ChangeEvent<HTMLInputElement>) =>{
         setChecked(!checked)
       }
+
       const handleClickEvent = (pokem:IPokemSave) =>{
         if(!checked){
             return
         }
-        if(validatePokemsSelected(pokem))
-        setPokemonsSelectd((preventList) => preventList.concat(pokem));
+        console.log(pokem.selected, true)
+        if(validatePokemsSelected(pokem) || pokem.selected){
+          changeStateSelected(pokem.name).then(() =>  setPokemonsSelectd((preventList) => preventList.concat(pokem)) )
+        
+      
+      }
         console.log(pokemonsSelected)
       }
       const handleRemove = (name:string) => {
-        const pokemonFilter: IPokemSave[] = pokemonsSelected.filter(pok => pok.name !== name)
-        setPokemonsSelectd(pokemonFilter)
+        removePokemonFromSelected(name)
       }
+
       const handleClickSearch = () => {
         searchPokemon()
       }
+
       const handleSave = (name: string) => {
         setIsLoading(true)
         localStorage.setItem("nameUser",name)

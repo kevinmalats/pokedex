@@ -10,7 +10,7 @@ type Iprops = {
 
 export default function PokemonList(props:Iprops){
     const {pokemons, handleEventClick} = props;
-  
+  console.log(pokemons)
 
 return(
    <>
@@ -18,8 +18,10 @@ return(
         {pokemons.map((pokemon, index)=>(
             
             <li key={index}>
-               <a onClick={()=> handleEventClick({name:pokemon.name, img:pokemon.sprites.front_default, type:pokemon?.types[0]?.type.name || ""})} className="cursor-pointer">
-                    <div className="flex ">
+               <a onClick={()=> handleEventClick({selected: pokemon.selected,name:pokemon.name, img:pokemon.sprites.front_default, type:pokemon?.types[0]?.type.name || ""})} className="cursor-pointer">
+                   {/*  <div className={pokemon.selected ? "flex  h-60 bg-red-500 relative ": "flex "}>
+                    </div> */}
+                    <div className={pokemon.selected ? "bg-red-500 opacity-50 flex ": "flex"}>
                         <div className="grid grid-rows-3 gap-20 w-55 max-w-8 h-60 shadow-md  pl-2 ">
                             {/* Name */}
                             <div className=" mt-5">
@@ -50,7 +52,7 @@ return(
                                 </div>
                             </div>
                         </div>
-                    <div className={ (color[pokemon?.types[0]?.type.name || ""] || 'bg-gray-500') +" rounded  w-2/3 flex"}>
+                    <div className={pokemon.selected ?"bg-red-500  w-2/3 flex opacity":(color[pokemon?.types[0]?.type.name || ""] || 'bg-gray-500') +" rounded  w-2/3 flex"}>
                         <img src={pokemon.sprites.other?.dream_world.front_default || pokemon.sprites.front_default }
                           alt={pokemon.name} 
                            className=" h-30 m-auto w-60  max-h-28" />
