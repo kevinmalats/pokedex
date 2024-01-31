@@ -9,6 +9,7 @@ import Switch from '@mui/material/Switch';
 import PokemonsSelectd from "~/components/pokemonsSelected";
 import CustomModal from "~/components/modal";
 import CircularProgress from '@mui/material/CircularProgress';
+import { StageEnum } from "~/constans/enum";
 
 const endpoint:string = "pokemons" ;
 export default function Home(){
@@ -73,7 +74,7 @@ export default function Home(){
     }
     const fetchPokemon =  async () => {
       console.log(process.env.NODE_ENV)
-        if(!load.current && process.env.NODE_ENV !== 'production'){
+        if(!load.current && process.env.NODE_ENV !== StageEnum.PRODUCTION){
             load.current = true;
             return
         }
